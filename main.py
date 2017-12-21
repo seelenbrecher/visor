@@ -36,8 +36,8 @@ import aiy.voicehat
 from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 
-from visor import where_am_i, get_direction
-from led import init_output, light
+from visor import where_am_i, get_direction, capture
+from led_visor import init_output, light
 
 LED_PIN = 32
 
@@ -67,8 +67,20 @@ def find_direction(destination):
         #aiy.audio.say(instruction)
         time.sleep(int(duration))
 
-def recognize_people():
-    aiy.audio.say('recognize')
+def detect_object():
+    objects = capture()
+
+    text = 'there are'
+    for object in objects:
+        if objects[object] > 1:
+           text += ('%d %ss,').format(objects[object], object)
+        else:
+           text += ('%d %s, ').format(objects[object], object)
+
+    text += ' in front of you'
+    print(text)
+
+    aiy.audio.say(text)
 
 def get_time():
     time = subprocess.check_output('date "+%H:%M %p"', shell=True).decode('utf-8')
@@ -77,18 +89,20 @@ def get_time():
 
 
 def process_event(assistant, event):
-    status_ui = aiy.voicehat.get_status_ui()
+    #status_ui = aiy.voicehat.get_status_ui()
     if event.type == EventType.ON_START_FINISHED:
-        status_ui.status('ready')
+        #status_ui.status('ready')
+        light(LED_PIN, 'on')
         if sys.stdout.isatty():
             print('Say "OK, Google" then speak, or press Ctrl+C to quit...')
 
-    elif event.type == EventType.ON_CONVERSATION_TURN_STARTED:
-        status_ui.status('listening')
+    #elif event.type == EventType.ON_CONVERSATION_TURN_STARTED:
+        #status_ui.status('listening')
 
     elif event.type == EventType.ON_RECOGNIZING_SPEECH_FINISHED and event.args:
         print('You said:', event.args['text'])
         text = event.args['text'].lower()
+        print(text)
         if 'location' in text:
             assistant.stop_conversation()
             find_current_location()
@@ -96,18 +110,20 @@ def process_event(assistant, event):
             assistant.stop_conversation()
             destination = text.split('direction to')[-1]
             find_direction(destination)
-        elif 'recognize people' in text:
+        elif 'what am i seeing' in text:
             assistant.stop_conversation()
-            recognize_people()
+            detect_object()
         elif 'what time is it' in text:
             assistant.stop_conversation()
             get_time()
 
     elif event.type == EventType.ON_END_OF_UTTERANCE:
-        status_ui.status('thinking')
+        light(LED_PIN, 'off')
+        #status_ui.status('thinking')
 
     elif event.type == EventType.ON_CONVERSATION_TURN_FINISHED:
-        status_ui.status('ready')
+        light(LED_PIN, 'on')
+        #status_ui.status('ready')
 
     elif event.type == EventType.ON_ASSISTANT_ERROR and event.args and event.args['is_fatal']:
         sys.exit(1)

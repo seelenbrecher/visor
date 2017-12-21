@@ -52,3 +52,4 @@ def get_lat_lng():
             if data_stream.TPV['lat'] != 'n/a':
                  return data_stream.TPV['lat'], data_stream.TPV['lon']
 
+

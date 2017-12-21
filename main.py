@@ -28,6 +28,7 @@ import logging
 import subprocess
 import sys
 import time
+import os
 
 import aiy.assistant.auth_helpers
 import aiy.audio
@@ -36,6 +37,9 @@ from google.assistant.library import Assistant
 from google.assistant.library.event import EventType
 
 from visor import where_am_i, get_direction
+from led import init_output, light
+
+LED_PIN = 32
 
 logging.basicConfig(
     level=logging.INFO,
@@ -52,13 +56,15 @@ def find_current_location():
     aiy.audio.say(current_location)
 
 def find_direction(destination):
+    print(destination)
     directions = get_direction(destination)
 
     for direction in directions:
         instruction = direction['instruction']
         duration = direction['duration']
 
-        aiy.audio.say(instruction)
+        os.system('google_speech -l id "%s" -e delay 1' % instruction)
+        #aiy.audio.say(instruction)
         time.sleep(int(duration))
 
 def recognize_people():
@@ -86,9 +92,9 @@ def process_event(assistant, event):
         if 'location' in text:
             assistant.stop_conversation()
             find_current_location()
-        elif 'direction' in text:
+        elif 'direction to' in text:
             assistant.stop_conversation()
-            destination = text[:1]
+            destination = text.split('direction to')[-1]
             find_direction(destination)
         elif 'recognize people' in text:
             assistant.stop_conversation()
@@ -108,6 +114,8 @@ def process_event(assistant, event):
 
 
 def main():
+    init_output([LED_PIN])
+    light(LED_PIN, 'on')
     credentials = aiy.assistant.auth_helpers.get_assistant_credentials()
     with Assistant(credentials) as assistant:
         for event in assistant.start():

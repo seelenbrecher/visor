@@ -1,6 +1,6 @@
 import requests
 import subprocess
-import gps
+from gps3 import gps3
 import re
 
 API_URL = "https://maps.googleapis.com/maps/api/{}/json?"
@@ -10,6 +10,9 @@ URL_GEOCODE = "latlng={},{}"
 VOICE = ['google_speech', '-l', 'id', '-e', 'speed', '0.9']
 
 TAG_RE = re.compile(r'<[^>]+>')
+
+gps_socket = gps3.GPSDSocket()
+data_stream = gps3.DataStream()
 
 def get_address():
     lat, lng = get_lat_lng()
@@ -40,10 +43,12 @@ def get_nav(origin, destination):
     return directions
 
 def get_lat_lng():
-    gpsd = gps.gps()
-    gpsd.stream(gps.WATCH_ENABLE|gps.WATCH_NEWSTYLE)
+    gps_socket.connect()
+    gps_socket.watch()
 
-    for report in gpsd:
-        if report['class'] == 'TPV':
-            return report['lat'], report['lon']
+    for data in gps_socket:
+        if data:
+            data_stream.unpack(data)
+            if data_stream.TPV['lat'] != 'n/a':
+                 return data_stream.TPV['lat'], data_stream.TPV['lon']
 

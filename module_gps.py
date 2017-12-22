@@ -53,3 +53,7 @@ def get_lat_lng():
                  return data_stream.TPV['lat'], data_stream.TPV['lon']
 
 
+if __name__ == "__main__":
+    print('location:')
+    print(get_address())
+

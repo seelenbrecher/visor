@@ -69,13 +69,14 @@ def find_direction(destination):
 
 def detect_object():
     objects = capture()
+    print(objects)
 
-    text = 'there are'
+    text = 'there are '
     for object in objects:
         if objects[object] > 1:
-           text += ('%d %ss,').format(objects[object], object)
+           text += '{} {}s,'.format(objects[object], object)
         else:
-           text += ('%d %s, ').format(objects[object], object)
+           text += '{} {}, '.format(objects[object], object)
 
     text += ' in front of you'
     print(text)
@@ -110,7 +111,7 @@ def process_event(assistant, event):
             assistant.stop_conversation()
             destination = text.split('direction to')[-1]
             find_direction(destination)
-        elif 'what am i seeing' in text:
+        elif 'what am i seeing' in text or 'vision' in text:
             assistant.stop_conversation()
             detect_object()
         elif 'what time is it' in text:

@@ -1,6 +1,4 @@
 Module                  Size  Used by
-pps_ldisc               2637  2
-pps_core                9164  2 pps_ldisc
 uvcvideo               81640  0
 videobuf2_vmalloc       5920  1 uvcvideo
 videobuf2_memops        2009  1 videobuf2_vmalloc
@@ -10,27 +8,24 @@ videodev              184712  3 uvcvideo,videobuf2_core,videobuf2_v4l2
 media                  28362  2 uvcvideo,videodev
 rndis_host              7081  0
 cdc_ether               6354  1 rndis_host
-brcmfmac              292632  0
-brcmutil                9863  1 brcmfmac
-cfg80211              544545  1 brcmfmac
-spidev                  7373  0
-rfkill                 20851  3 cfg80211
-snd_bcm2835            24427  0
-bcm2835_gpiomem         3940  0
-spi_bcm2835             7596  0
-evdev                  12423  0
+evdev                  12423  1
 snd_usb_audio         148548  0
 snd_hwdep               6688  1 snd_usb_audio
 snd_usbmidi_lib        22487  1 snd_usb_audio
 snd_rawmidi            23790  1 snd_usbmidi_lib
 snd_seq_device          5504  1 snd_rawmidi
+brcmfmac              292632  0
+brcmutil                9863  1 brcmfmac
+cfg80211              544545  1 brcmfmac
+snd_bcm2835            24427  0
+rfkill                 20851  3 cfg80211
 snd_pcm                98501  2 snd_usb_audio,snd_bcm2835
 snd_timer              23968  1 snd_pcm
 snd                    70032  8 snd_hwdep,snd_usb_audio,snd_timer,snd_rawmidi,snd_usbmidi_lib,snd_seq_device,snd_bcm2835,snd_pcm
+bcm2835_gpiomem         3940  0
 uio_pdrv_genirq         3923  0
-uio                    10204  1 uio_pdrv_genirq
 fixed                   3285  0
-cdc_acm                19414  0
+uio                    10204  1 uio_pdrv_genirq
 ip_tables              13161  0
 x_tables               20578  1 ip_tables
-ipv6                  408900  28
+ipv6                  408900  34

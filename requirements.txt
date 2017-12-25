@@ -5,3 +5,4 @@ gps3
 RPi.GPIO
 google-assistant-library==0.0.3
 google_speech
+pubnub

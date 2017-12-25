@@ -1,11 +1,12 @@
 [Unit]
 Description=Visor Main Service
+After=network.target
 
 [Service]
 Type=simple
-Environment=WORKDIR=/home/pi/visor2
-WorkingDirectory=${WORKDIR}
-ExecStart=${WORKDIR}/env/bin/python ${WORKDIR}/main.py
+User=pi
+WorkingDirectory=/home/pi/visor
+ExecStart=/home/pi/visor/env/bin/python /home/pi/visor/main.py
 Restart=always
 
 [Install]

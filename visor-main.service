@@ -1,0 +1,12 @@
+[Unit]
+Description=Visor Main Service
+
+[Service]
+Type=simple
+Environment=WORKDIR=/home/pi/visor2
+WorkingDirectory=${WORKDIR}
+ExecStart=${WORKDIR}/env/bin/python ${WORKDIR}/main.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
